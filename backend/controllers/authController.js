@@ -2,10 +2,13 @@ const User = require("../models/User");
 const otpGenerate = require("../utils/otpGenerator");
 const response = require("../utils/reponsHandler");
 const sendOtpToEmail = require("../services/emailServices");
-const {
-  sendOtpToPhoneNumber,
-  verifyOtp,
-} = require("../services/twillioPhoneNumber");
+// const {
+//   sendOtpToPhoneNumber,
+//   verifyOtp,
+// } = require("../services/twillioPhoneNumber");
+
+const twilioServices = require("../services/twillioPhoneNumber");
+
 const genrerateToken = require("../utils/generateToken");
 
 // sending otp
@@ -26,7 +29,8 @@ const sendOtp = async (req, res) => {
       user.expiry = expiry;
 
       await user.save();
-      await sendOtpToEmail(email, otp);
+      // await sendOtpToEmail(email, otp);
+      await twilioServices.sendOtpToPhoneNumber(email, otp);
       return response(res, 200, "OTP send to your email ", { email });
     }
 
@@ -84,7 +88,7 @@ const verifyOtp = async (req, res) => {
       if (!user) {
         return response(res, 404, "User Not Found");
       }
-      const result = await verifyOtp(fullPhoneNumber, otp);
+      const result = await twilioServices.verifyOtp(fullPhoneNumber, otp);
       if (result.status !== "approved") {
         return response(res, 400, "invalid Otp");
       }

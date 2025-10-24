@@ -4,26 +4,32 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 
-const connectDb = require("./config/dbConnect");
-const authRoutes = require("../backend/routes/authRoutes");
-
 dotenv.config();
+const connectDb = require("./config/dbConnect");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8000;
 
-// middleware
+// Middleware
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// datbase conncetion
-connectDb();
-
 // Routes
-
 app.use("/api/auth", authRoutes);
+app.get("/", (req, res) => res.send("PingLink backend running 🚀"));
 
+// Start server first
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
+
+  // Connect DB asynchronously AFTER server starts
+  connectDb()
+    .then(() => console.log("MongoDB connected"))
+    .catch((err) => console.error("MongoDB connection error:", err));
+
+  // Initialize Gmail / OTP setup safely
+  // wrap in try/catch and async function if needed
 });
