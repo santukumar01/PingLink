@@ -2,10 +2,6 @@ const User = require("../models/User");
 const otpGenerate = require("../utils/otpGenerator");
 const response = require("../utils/reponsHandler");
 const sendOtpToEmail = require("../services/emailServices");
-// const {
-//   sendOtpToPhoneNumber,
-//   verifyOtp,
-// } = require("../services/twillioPhoneNumber");
 
 const twilioServices = require("../services/twillioPhoneNumber");
 
@@ -29,8 +25,7 @@ const sendOtp = async (req, res) => {
       user.expiry = expiry;
 
       await user.save();
-      // await sendOtpToEmail(email, otp);
-      await twilioServices.sendOtpToPhoneNumber(email, otp);
+      await sendOtpToEmail(email, otp);
       return response(res, 200, "OTP send to your email ", { email });
     }
 

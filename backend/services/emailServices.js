@@ -52,4 +52,4 @@ const sendOtpToEmail = async (email, otp) => {
   });
 };
 
-module.email = sendOtpToEmail;
+module.exports = sendOtpToEmail;

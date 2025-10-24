@@ -9,7 +9,7 @@ const connectDb = require("./config/dbConnect");
 const authRoutes = require("./routes/authRoutes");
 
 const app = express();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 4000;
 
 // Middleware
 app.use(cors());

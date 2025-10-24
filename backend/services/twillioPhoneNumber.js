@@ -20,6 +20,7 @@ const sendOtpToPhoneNumber = async (phoneNumber) => {
     const response = await client.verify.v2
       .services(serviceSid)
       .verifications.create({
+        // to: phoneNumber,
         to: phoneNumber,
         channel: "sms",
       });
