@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.get("/", (req, res) => res.send("PingLink backend running 🚀"));
+// app.get("/", (req, res) => res.send("PingLink backend running 🚀"));
 
 // Start server first
 app.listen(PORT, () => {
