@@ -21,15 +21,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 // app.get("/", (req, res) => res.send("PingLink backend running 🚀"));
 
+// connecting to database
+connectDb();
+
 // Start server first
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
-
-  // Connect DB asynchronously AFTER server starts
-  connectDb()
-    .then(() => console.log("MongoDB connected"))
-    .catch((err) => console.error("MongoDB connection error:", err));
-
-  // Initialize Gmail / OTP setup safely
-  // wrap in try/catch and async function if needed
 });
