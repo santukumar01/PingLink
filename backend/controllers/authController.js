@@ -11,7 +11,7 @@ const genrerateToken = require("../utils/generateToken");
 const sendOtp = async (req, res) => {
   const { phoneNumber, phoneSuffix, email } = req.body;
   const otp = otpGenerate();
-  const expiry = new Date(Date.now() + 5 * 60 * 1000);
+  const expiry = new Date(Date.now() + 10 * 60 * 1000);
   let user;
   try {
     if (email) {
@@ -22,10 +22,12 @@ const sendOtp = async (req, res) => {
       }
 
       user.emailOtp = otp;
-      user.expiry = expiry;
+      user.emailOtpExpiry = expiry;
 
       await user.save();
       await sendOtpToEmail(email, otp);
+
+      console.log("this is time of send ing ", user);
       return response(res, 200, "OTP send to your email ", { email });
     }
 
@@ -40,7 +42,8 @@ const sendOtp = async (req, res) => {
     if (!user) {
       user = new User({ phoneNumber, phoneSuffix });
     }
-    await sendOtpToPhoneNumber(fullPhoneNumber);
+
+    await twilioServices.sendOtpToPhoneNumber(fullPhoneNumber);
     await user.save();
 
     return response(res, 200, "Otp send to your PhoneNumber", user);
@@ -59,10 +62,10 @@ const verifyOtp = async (req, res) => {
       user = await User.findOne({ email });
       if (!user) {
         return response(res, 404, "User not found");
+      } else {
+        console.log("this is time verifing ", user);
       }
-
       const now = new Date();
-
       if (
         !user.emailOtp ||
         String(user.emailOtp) !== String(otp) ||
@@ -89,13 +92,13 @@ const verifyOtp = async (req, res) => {
       }
       user.isVerified = true;
       await user.save();
-      const token = genrerateToken(user?._id);
-      res.cookie("auth_token", token, {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 365,
-      });
-      return response(res, 200, "Otp  verfied Succesfully", { token, user });
     }
+    const token = genrerateToken(user?._id);
+    res.cookie("auth_token", token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 365,
+    });
+    return response(res, 200, "Otp  verfied Succesfully", { token, user });
   } catch (error) {
     console.error(error);
     return response(res, 500, "internal server error");

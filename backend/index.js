@@ -17,12 +17,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Routes
-app.use("/api/auth", authRoutes);
-// app.get("/", (req, res) => res.send("PingLink backend running 🚀"));
-
 // connecting to database
 connectDb();
+
+// Routes
+// app.get("/", (req, res) => res.send("PingLink backend running 🚀"));
+app.use("/api/auth", authRoutes);
 
 // Start server first
 app.listen(PORT, () => {
