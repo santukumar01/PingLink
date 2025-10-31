@@ -10,7 +10,7 @@ const response = (res, statusCode, message, data = null) => {
     data,
   };
 
-  console.log(responseObject); // ✅ correct logging
+  // console.log(responseObject); // ✅ correct logging
   return res.status(statusCode).json(responseObject);
 };
 

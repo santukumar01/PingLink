@@ -27,7 +27,7 @@ const sendOtp = async (req, res) => {
       await user.save();
       await sendOtpToEmail(email, otp);
 
-      console.log("this is time of send ing ", user);
+      // console.log("this is time of send ing ", user);
       return response(res, 200, "OTP send to your email ", { email });
     }
 
@@ -62,8 +62,6 @@ const verifyOtp = async (req, res) => {
       user = await User.findOne({ email });
       if (!user) {
         return response(res, 404, "User not found");
-      } else {
-        console.log("this is time verifing ", user);
       }
       const now = new Date();
       if (
