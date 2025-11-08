@@ -6,6 +6,7 @@ const sendOtpToEmail = require("../services/emailServices");
 const twilioServices = require("../services/twillioPhoneNumber");
 
 const genrerateToken = require("../utils/generateToken");
+const { uploadFileToCloudinary } = require("../config/cloudinaryconfig");
 
 // sending otp
 const sendOtp = async (req, res) => {
@@ -110,13 +111,25 @@ const updateProfile = async (req, res) => {
     const user = await User.findById(userId);
     const file = req.file;
     if (file) {
-      // const uploadResult =
+      const uploadResult = await uploadFileToCloudinary(file);
+      console.log(uploadResult);
+      user.profilePicture = uploadResult?.secure_url;
+    } else if (req.body.profilePicture) {
+      user.profilePicture = req.body.profilePicture;
     }
-  } catch (error) {}
+
+    if (username) user.username = username;
+    if (agreed) user.agreed = agreed;
+    if (about) user.about = about;
+    await user.save();
+    return response(res, 200, "user profile updated successfully", user);
+  } catch (error) {
+    console.error(error);
+    return response(res, 500, "internal server error");
+  }
 };
 
 module.exports = {
   sendOtp,
   verifyOtp,
 };
-// 1.50.54
